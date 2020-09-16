@@ -1,4 +1,5 @@
 .gitignore
+cpanfile
 Changes
 lib/Hash/Digger.pm
 Makefile.PL
