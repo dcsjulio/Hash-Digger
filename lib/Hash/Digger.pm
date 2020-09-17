@@ -11,11 +11,11 @@ Hash::Digger - Access nested hash structures without vivification
 
 =head1 VERSION
 
-Version 0.0.2
+Version 0.0.3
 
 =cut
 
-our $VERSION = '0.0.2';
+our $VERSION = '0.0.3';
 
 =head1 SYNOPSIS
 
@@ -70,8 +70,8 @@ Check if given path is diggable on the hash (`exists` equivalent)
 =cut
 
 sub diggable {
-    my ($root, @path) = @_;
-    return (_traverse_hash($root, @path))[1];
+    my ( $root, @path ) = @_;
+    return ( _traverse_hash( $root, @path ) )[1];
 }
 
 =head2 dig
@@ -81,8 +81,8 @@ Dig the hash and return the value. If the path is not valid, it returns undef.
 =cut
 
 sub dig {
-    my ($root, @path) = @_;
-    return exhume(undef, $root, @path);
+    my ( $root, @path ) = @_;
+    return exhume( undef, $root, @path );
 }
 
 =head2 exhume
@@ -92,39 +92,40 @@ Dig the hash and return the value. If the path is not valid, it returns a defaul
 =cut
 
 sub exhume {
-    my ($default, $root, @path) = @_;
-    return (_traverse_hash($root, @path))[0] // $default;
+    my ( $default, $root, @path ) = @_;
+    my $value = ( _traverse_hash( $root, @path ) )[0];
+    return defined $value ? $value : $default;
 }
 
 ## no critic (ValuesAndExpressions::ProhibitConstantPragma)
-use constant E_NO_ROOT => 'Root node is undefined';
+use constant E_NO_ROOT      => 'Root node is undefined';
 use constant E_NO_ROOT_HASH => 'Root node is not a hash reference';
-use constant E_NO_PATH => 'No path to exhume';
+use constant E_NO_PATH      => 'No path to exhume';
 
 # Traverse hash for the given path and return the data.
 # Last item could be `undef` as in `$hash{'foo'}{'bar'} = undef`,
 # so we also need to return if the element exists or not
 sub _traverse_hash {
-    my ($root, @path) = @_;
+    my ( $root, @path ) = @_;
     my $exists = 0;
 
-    croak E_NO_ROOT if ! defined $root;
-    croak E_NO_ROOT_HASH if ! _is_hash_reference($root);
-    croak E_NO_PATH if @path == 0;
+    croak E_NO_ROOT      if !defined $root;
+    croak E_NO_ROOT_HASH if !_is_hash_reference($root);
+    croak E_NO_PATH      if @path == 0;
 
-    while (my $element = shift @path) {
-        if (!exists $root->{$element}) {
-            return (undef, q());
+    while ( my $element = shift @path ) {
+        if ( !exists $root->{$element} ) {
+            return ( undef, q() );
         }
 
         $root = $root->{$element};
 
-        if (!_is_hash_reference($root) && @path > 0) {
-            return (undef, q());
+        if ( !_is_hash_reference($root) && @path > 0 ) {
+            return ( undef, q() );
         }
     }
 
-    return ($root, 1);
+    return ( $root, 1 );
 }
 
 sub _is_hash_reference {
@@ -185,4 +186,4 @@ This is free software, licensed under:
 
 =cut
 
-1; # End of Hash::Digger
+1;    # End of Hash::Digger
