@@ -4,7 +4,7 @@ Hash::Digger - Access nested hash structures without vivification
 
 # VERSION
 
-Version 0.0.2
+Version 0.0.3
 
 # SYNOPSIS
 
